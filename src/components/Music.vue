@@ -7,11 +7,11 @@
       <el-tab-pane label="排行榜" name="third" class="applyScroll">
         <m-ranklist></m-ranklist>
       </el-tab-pane> -->
-      <el-tab-pane label="最新歌曲" name="fifth">
-        <div :is="NewMusicComponents"></div>
-      </el-tab-pane>
       <el-tab-pane label="歌手" name="fourth" style="overflow: hidden!important">
         <div :is="Components"></div>
+      </el-tab-pane>
+      <el-tab-pane label="最新歌曲" name="fifth">
+        <div :is="NewMusicComponents"></div>
       </el-tab-pane>
     </el-tabs>
     <!-- 搜索框 -->
