@@ -117,8 +117,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="头像" required>
-          <el-upload class="avatar-uploader" :action="ImgUploadURL" :show-file-list="false"
-            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :headers="headerObj">
+          <el-upload class="avatar-uploader" :action="aaa" :show-file-list="false" 
+            :before-upload="beforeAvatarUpload" >
             <img v-if="registerForm.imageUrl" :src="registerForm.imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -131,9 +131,10 @@
         <el-link @click="loginDialogVisible = true , registerDialogVisible = false" type="primary">已有账号？去登录</el-link>
       </span>
     </el-dialog>
-
   </div>
 </template>
+
+
 
 <script>
   import aplayer from 'vue-aplayer'
@@ -154,15 +155,10 @@
         }
       }
       return {
-        // 图片上传URL
-        ImgUploadURL: '.../image',
-        // 图片头部
-        headerObj: {
-          Authorization:
-            window.sessionStorage.getItem('token')
-        },
+
         loginDialogVisible: false,
         registerDialogVisible: false,
+
         loginForm: {
           telephone: '',
           password: ''
@@ -175,6 +171,7 @@
           username: '',
           sex: '',
           imageUrl: '',
+          file: '',
         },
 
 
@@ -236,7 +233,7 @@
       },
       //注册框关闭
       registerDialogClose() {
-        this.$refs.loginRef.resetFields()
+        this.$refs.registerRef.resetFields()
       },
       // 登录
       Login() {
@@ -295,23 +292,39 @@
         );
       },
 
-      //图片上传成功
-      handleAvatarSuccess(res, file) {
-        this.registerForm.imageUrl = URL.createObjectURL(file.raw);
-      },
-      //图片格式校验
+
+
+
+      //格式校验,阻止图片自动上传,让图片随表单上传
       beforeAvatarUpload(file) {
+
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
+        if (isJPG) {
+          if (isLt2M) {
+
+            //图片预览
+            this.registerForm.imageUrl = URL.createObjectURL(file);
+            //将图片file添加到注册表单
+            this.registerForm.file = file;
+            //表单jason
+            console.log(this.registerForm);
+          }
+          else {
+            this.$message.error('上传头像图片大小不能超过 2MB!');
+          }
+        }
+        else {
           this.$message.error('上传头像图片只能是 JPG 格式!');
         }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+        return false;
+
       },
+
+
+
+
 
       // 获取用户信息
       async getUserInfo() {
