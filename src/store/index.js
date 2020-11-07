@@ -12,7 +12,7 @@ export default new Vuex.Store({
       url: ''
     },
     controlMsc: {},
-    mainIndex: 'first',
+    mainIndex: 'fifth',
     newmusicStatus: true,
     thisPlaylistId: 0
   },
