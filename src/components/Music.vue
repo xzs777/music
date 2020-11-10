@@ -1,19 +1,14 @@
 <template>
   <div>
     <el-tabs v-model="$store.state.mainIndex" @tab-click="handleClick" class="le-tab-demo">
-      <!-- <el-tab-pane label="个性推荐" name="first" class="applyScroll">
-        <m-home></m-home>
-      </el-tab-pane>
-      <el-tab-pane label="排行榜" name="third" class="applyScroll">
-        <m-ranklist></m-ranklist>
-      </el-tab-pane> -->
-      <el-tab-pane label="歌手" name="fourth" style="overflow: hidden!important">
-        <div :is="Components"></div>
-      </el-tab-pane>
       <el-tab-pane label="最新歌曲" name="fifth">
         <div :is="NewMusicComponents"></div>
       </el-tab-pane>
+      <el-tab-pane label="歌手" name="fourth" style="overflow: hidden!important">
+        <div :is="Components"></div>
+      </el-tab-pane>
     </el-tabs>
+    
     <!-- 搜索框 -->
     <div class="search">
       <input type="text" class="input-search" @focus="searchGuide" v-model="searchValue" @keyup.enter="searchEvent" />
@@ -22,11 +17,11 @@
     <!-- 搜索向导 -->
     <div class="search-guide" v-show="searchOpenclose">
       <div class="guide-box">
-        <div class="guide-box-tt">热门搜索</div>
+        <!-- <div class="guide-box-tt">热门搜索</div>
         <div class="hot-tags">
           <el-tag effect="plain" type="info" v-for="(item, i) in searchHots" :key="i" @click="hotTagEvent">
             {{item.first}}</el-tag>
-        </div>
+        </div> -->
         <div class="guide-box-tt">历史搜索</div>
         <div class="hot-tags">
           <el-tag effect="plain" type="info" v-for="(item, i) in historyTags" :key="i" @click="hotTagEvent"

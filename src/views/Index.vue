@@ -4,7 +4,7 @@
       <el-col class="left-list">
         <!-- 关闭、放大、缩小控制 -->
         <div class="control">
-          <el-button type="danger" icon="el-icon-circle-close"></el-button>
+          <el-button type="danger" icon="el-icon-circle-close" @click="test"></el-button>
           <el-button type="warning" icon="el-icon-circle-plus-outline"></el-button>
           <el-button type="success" icon="el-icon-remove-outline"></el-button>
         </div>
@@ -63,9 +63,10 @@
           :showLrc="isShowLrc" :lrcType="1" :controls=" true" @loadstart="loadStartMusic"></aplayer>
         <i class="el-icon-caret-left el-icon-common" @click="skipBackSong"></i>
         <i class="el-icon-caret-right el-icon-common" @click="skipForwardSong"></i>
-        <i class="lrcToggle" :class="isShowLrc ? 'lrcdisplay' : ''" @click="isShowLrc = !isShowLrc">词</i>
+        <!-- <i class="lrcToggle" :class="isShowLrc ? 'lrcdisplay' : ''" @click="isShowLrc = !isShowLrc">词</i> -->
         <i></i>
       </div>
+      
     </el-row>
 
     <!-- 登录框 -->
@@ -81,7 +82,7 @@
       <span slot="footer">
         <el-button @click="loginDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="Login()">确 定</el-button>
-        </br></br>
+        <br><br>
         <el-link @click="loginDialogVisible = false , registerDialogVisible = true" type="primary">还没有账号？去注册</el-link>
       </span>
     </el-dialog>
@@ -269,7 +270,7 @@
           }
         );
       },
-
+      //注册
       register() {
         this.$refs.registerRef.validate(
           async valid => {
@@ -291,9 +292,11 @@
           }
         );
       },
-
-
-
+      
+      test(){
+        console.log(this.$store.state.playMusic.src);
+        console.log(this.$store.state.playMusic.pic);
+      },
 
       //格式校验,阻止图片自动上传,让图片随表单上传
       beforeAvatarUpload(file) {
@@ -348,6 +351,7 @@
         await this.$request.get('logout')
         this.$message.success('账号已退出')
       },
+      
       // 切换上一首
       skipBackSong() {
         const listLength = this.$refs.musicRef.musicList.length
@@ -360,6 +364,7 @@
           this.$refs.musicRef.play()
         }, 500)
       },
+
       // 切换下一首
       skipForwardSong() {
         let step = 1
@@ -375,6 +380,7 @@
           this.$refs.musicRef.play()
         }, 500)
       },
+
       // 加载音乐开始时候 加载歌词
       async loadStartMusic(e) {
         if (
@@ -404,6 +410,8 @@
         this.$router.push('playlist')
       }
     },
+
+    
     computed: {
       musicList: () => {
         // 获取音乐列表
