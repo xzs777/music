@@ -7,9 +7,11 @@ export default new Vuex.Store({
   useEslint: false,
   state: {
     playMusic: {
-      name: '',
-      artist: '',
-      url: ''
+      name: '123',
+      title:'music1',
+      pic:require('./covers/cover1.jpg'),
+      artist: 'artist1',
+      src:require('./musicfiles/music1.mp3')
     },
     controlMsc: {},
     mainIndex: 'fifth',

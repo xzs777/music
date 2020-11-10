@@ -10,11 +10,11 @@
     </div>
     <div class="search-guide" v-show="searchOpenclose">
       <div class="guide-box">
-        <div class="guide-box-tt">热门搜索</div>
+        <!-- <div class="guide-box-tt">热门搜索</div>
         <div class="hot-tags">
           <el-tag effect="plain" type="info" v-for="(item, i) in searchHots" :key="i" @click="hotTagEvent">
             {{item.first}}</el-tag>
-        </div>
+        </div> -->
         <div class="guide-box-tt">历史搜索</div>
         <div class="hot-tags">
           <el-tag effect="plain" type="info" v-for="(item, i) in historyTags" :key="i" @click="hotTagEvent"
