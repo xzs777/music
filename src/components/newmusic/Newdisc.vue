@@ -21,12 +21,12 @@
             </el-image>
           </el-card>
           <div class="recommend-name">
-            <span @click="linksongsDisc(item.id)">{{item.name}}</span>
+            <span @click="linksongsDisc(item.id)">{{item.Name}}</span>
             <br />
             <span
               class="author"
-              @click="linksongsMusic(item.artists[0].id)"
-            >{{item.artists[0].name}}</span>
+              @click="linksongsMusic(item.id)"
+            >{{item.Singerid}}</span>
           </div>
         </el-col>
       </el-row>
@@ -72,12 +72,39 @@ export default {
       this.queryData.type = this.typeList[item]
       this.getDiscList()
     },
-    async getDiscList() {
+    // async getDiscList() {
+    //   const { data: res } = await this.$request.get('/top/album', {
+    //     params: this.queryData
+    //   })
+    //   this.discList = res.albums
+    //   this.total = res.total
+    // },
+    // handleCurrentChange(pagenum) {
+    //   this.queryData.offset = (pagenum - 1) * this.queryData.limit
+    //   this.getDiscList()
+    // },
+    // linksongsMusic(id) {
+    //   window.sessionStorage.setItem('songsId', id)
+    //   this.$router.push('songmusiclist')
+    // },
+    // linksongsDisc(id) {
+    //   window.sessionStorage.setItem('albumId', id)
+    //   this.$router.push('album')
+    // }
+    async getDiscList() {//测试
       const { data: res } = await this.$request.get('/top/album', {
         params: this.queryData
       })
-      this.discList = res.albums
+      this.discList = res.data
       this.total = res.total
+      //测试
+      // const arrData = []
+      // const arr = {}
+      // arr.picUrl = 'pic'
+      // arr.Name = 'name'
+      // arr.Singerid = 'singerid'
+      // arrData.push(arr)
+      // this.discList = arrData
     },
     handleCurrentChange(pagenum) {
       this.queryData.offset = (pagenum - 1) * this.queryData.limit

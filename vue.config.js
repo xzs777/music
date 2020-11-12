@@ -1,5 +1,15 @@
+const { join } = require("core-js/fn/array")
+
 module.exports = {
+  
+
   lintOnSave:false,
+  resolve:{
+    alias: {
+      extensions: ['.js', '.vue'],
+      '@': resolve('src'),
+    },
+  },
   chainWebpack: config => {
 
     // 发布模式

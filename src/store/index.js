@@ -9,9 +9,9 @@ export default new Vuex.Store({
     playMusic: {
       name: '123',
       title:'music1',
-      pic:require('./covers/cover1.jpg'),
+      pic:require('@/store/covers/cover1.jpg'),//一定不可为空
       artist: 'artist1',
-      src:require('./musicfiles/music1.mp3')
+      src:require('@/store/musicfiles/music1.mp3')
     },
     controlMsc: {},
     mainIndex: 'fifth',

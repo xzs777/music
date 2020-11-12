@@ -1,7 +1,8 @@
 // 用于存放公共处理函数
 
 import Vue from 'vue'
-// 全部播放
+
+// 播放歌单中的所有歌曲
 Vue.prototype.playMusicAtonce = async function (songsList) {
   const musiclist = []
   window.sessionStorage.setItem('musiclist', '')
@@ -9,14 +10,14 @@ Vue.prototype.playMusicAtonce = async function (songsList) {
   songsList.forEach(item => {
     idArr.push(item.id)
   })
-  const { data: res } = await this.$request.get(`/song/url?id=${idArr.join(',')}`)
+  // const { data: res } = await this.$request.get(`/song/url?id=${idArr.join(',')}`)
   songsList.forEach(item => {
     let music = {}
     music = {
       title: item.name,
-      artist: item.author.join(' '),
-      src: res.data.find(i => i.id === item.id).url,
-      pic: item.pic,
+      artist: item.author,
+      src: require('@/store/musicfiles/'+item.src),
+      pic: require('@/store/covers/'+item.pic),
       id: item.id
     }
     musiclist.push(music)

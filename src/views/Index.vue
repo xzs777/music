@@ -28,26 +28,32 @@
             <span slot="title">发现音乐</span>
           </el-menu-item>
           <el-row class="left-litle-tt">我的音乐</el-row>
-          <el-menu-item index="collection">
+          <!-- <el-menu-item index="collection">
             <i class="el-icon-star-on"></i>
             <span slot="title">我的收藏</span>
-          </el-menu-item>
+          </el-menu-item> -->
           <el-submenu index="1" class="music-list">
             <template slot="title">
               <span>创建的歌单</span>
             </template>
             <template v-for="(item, i) in userMusicList">
-              <el-menu-item class="music-list-item" :key="i" v-if="item.creator.userId === userInfo.userId"
-                @click="getSonglistMusic(item.id)">{{item.name}}</el-menu-item>
+              <el-menu-item class="music-list-item" :key="i" @click="getSonglistMusic(item.id)">
+                <span>{{item.name}}</span>
+              </el-menu-item>
+              <!-- 创建歌单 -->
             </template>
+            <el-menu-item class="music-list-item" @click="createListDialogVisible = true">
+              <i class="el-icon-plus"></i><span>创建歌单</span>
+            </el-menu-item>
           </el-submenu>
           <el-submenu index="2" class="music-list">
             <template slot="title">
               <span>收藏的歌单</span>
             </template>
-            <template v-for="(item, i) in userMusicList">
-              <el-menu-item class="music-list-item" :key="i" v-if="item.creator.userId !== userInfo.userId"
-                @click="getSonglistMusic(item.id)">{{item.name}}</el-menu-item>
+            <template v-for="(item, i) in collectMusicList">
+              <el-menu-item class="music-list-item" :key="i" @click="getSonglistMusic(item.id)">
+                <span>{{item.name}}</span>             
+              </el-menu-item>
             </template>
           </el-submenu>
         </el-menu>
@@ -66,7 +72,7 @@
         <!-- <i class="lrcToggle" :class="isShowLrc ? 'lrcdisplay' : ''" @click="isShowLrc = !isShowLrc">词</i> -->
         <i></i>
       </div>
-      
+
     </el-row>
 
     <!-- 登录框 -->
@@ -80,10 +86,10 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button @click="loginDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="Login()">确 定</el-button>
+        <el-button @click="loginDialogVisible = false" >取 消</el-button>
+        <el-button type="danger" @click="Login()">确 定</el-button>
         <br><br>
-        <el-link @click="loginDialogVisible = false , registerDialogVisible = true" type="primary">还没有账号？去注册</el-link>
+        <el-link @click="loginDialogVisible = false , registerDialogVisible = true" type="danger">还没有账号？去注册</el-link>
       </span>
     </el-dialog>
 
@@ -118,20 +124,34 @@
           </el-select>
         </el-form-item>
         <el-form-item label="头像" required>
-          <el-upload class="avatar-uploader" :action="aaa" :show-file-list="false" 
-            :before-upload="beforeAvatarUpload" >
+          <el-upload class="avatar-uploader" :action="aaa" :show-file-list="false" :before-upload="beforeAvatarUpload">
             <img v-if="registerForm.imageUrl" :src="registerForm.imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
         <el-form-item>
-          <el-button @click="register" style="width:80%" type="primary">注册</el-button>
+          <el-button @click="register" style="width:80%" type="danger">注册</el-button>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-link @click="loginDialogVisible = true , registerDialogVisible = false" type="primary">已有账号？去登录</el-link>
+        <el-link @click="loginDialogVisible = true , registerDialogVisible = false" type="danger">已有账号？去登录</el-link>
       </span>
     </el-dialog>
+
+    <!-- 创建歌单对话框 -->
+    <el-dialog title="创建歌单" :visible.sync="createListDialogVisible" width="30%" @close="loginDialogClose">
+      <el-form :model="createListForm" status-icon :rules="createListRules" ref="createListRef" label-width="60px">
+        <el-form-item label="名称" prop="name">
+          <el-input type="text" v-model="createListForm.name" name="name" ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="createListDialogVisible = false">取 消</el-button>
+        <el-button type="danger" @click="createList()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+
   </div>
 </template>
 
@@ -159,6 +179,7 @@
 
         loginDialogVisible: false,
         registerDialogVisible: false,
+        createListDialogVisible: false,
 
         loginForm: {
           telephone: '',
@@ -174,7 +195,9 @@
           imageUrl: '',
           file: '',
         },
-
+        createListForm:{
+          name:''
+        },
 
         loginRules: {
           telephone: [
@@ -213,15 +236,46 @@
           ],
         },
 
+        createListRules: {
+          name: [
+            { required: true, message: '请输入歌单名', trigger: 'blur' }
+          ],
+        },
+
 
 
         //用户信息
-        userInfoStatus: true,
-        userInfo: {},
+        userInfoStatus: true,//是否登录
+        userInfo: {
+          nickname: '',//昵称
+          avatarUrl: require('@/store/covers/cover1.jpg')//头像地址
+        },
+
+
         isShowLrc: false,
         firstplayIndex: -1,
         activePath: 'music',
-        userMusicList: []
+
+
+        //用户创建的歌单
+        userMusicList: [
+          {
+            name: '歌单1',//歌单名
+            id: '1',//歌单id
+            createid: '1',//创建者id
+            musiclist: [],//音乐列表
+          }
+        ],
+        //用户收藏的歌单
+        collectMusicList: [
+          {
+            name: '歌单2',//歌单名
+            id: '1',//歌单id
+            createid: '2',//创建者id
+            musiclist: [],//音乐列表
+          }
+        ]
+
       }
     },
     components: {
@@ -236,6 +290,19 @@
       registerDialogClose() {
         this.$refs.registerRef.resetFields()
       },
+
+      //获取用户创建的歌单
+      getuserMusicList() {
+        const { data: res } = this.$request.get()
+        this.userMusicList = res.data;
+      },
+
+      //获取用户收藏的歌单
+      getcollectMusicList() {
+        const { data: res } = this.$request.get()
+        this.collectMusicList = res.data;
+      },
+
       // 登录
       Login() {
         this.$refs.loginRef.validate(
@@ -254,17 +321,39 @@
 
                 //保存token
                 localStorage.setItem('token', res.data.token);
-
-
                 window.sessionStorage.setItem('token', res.data.token);
 
                 //获取用户信息
-                this.userInfoStatus = false
-                this.userInfo = res.profile
-                this.userMusicList = res.playlist
+                this.userInfoStatus = false//修改登录状态
+                this.userInfo.nickname = res.data.nickname//昵称
+                window.sessionStorage.setItem('userId',res.data.id)//保存用户id
+                this.userInfo.avatarUrl = require('@/store/avatar/' + res.data.avatarUrl) //头像图片地址 
+
+
+                //获取用户创建的歌单
+                this.getuserMusicList();
+                //获取用户收藏的歌单
+                this.getcollectMusicList();
+
+                //关闭登录框
+                this.loginDialogVisible = false;
 
               }).catch(err => {
-                this.$message.error('账号或密码错误!');
+
+                // this.$message.error('账号或密码错误!');
+                //以下为测试
+                this.$message.success('登录成功!');
+                localStorage.setItem('token', '123456');
+                window.sessionStorage.setItem('token', '123456');
+                this.userInfoStatus = false;
+                this.userInfo.nickname = 'jack'
+                this.userInfo.avatarUrl = require('@/store/avatar/avatar1.jpg')
+                window.sessionStorage.setItem('userId', '2');
+                
+                console.log(window.sessionStorage.getItem('userId'))
+
+                //关闭登录框
+                this.loginDialogVisible = false;
               })
             }
           }
@@ -292,8 +381,8 @@
           }
         );
       },
-      
-      test(){
+
+      test() {
         console.log(this.$store.state.playMusic.src);
         console.log(this.$store.state.playMusic.pic);
       },
@@ -325,7 +414,24 @@
 
       },
 
-
+      //创建歌单
+      createList(){
+        this.$refs.createListRef.validate(
+          async valid => {
+            //预验证
+            if (!valid)
+              return;
+            else {
+              const api = 'http://';
+              this.$request.post(api, { ...this.createListForm }).then(res => {
+                this.$message.success('创建成功!');
+              }).catch(err => {
+                this.$message.error('创建失败');
+              })
+            }
+          }
+        );     
+      },
 
 
 
@@ -344,6 +450,7 @@
           this.userMusicList = res1.playlist
         } catch (error) { }
       },
+
       // 用户退出
       async userLogout() {
         this.userInfoStatus = true
@@ -351,7 +458,7 @@
         await this.$request.get('logout')
         this.$message.success('账号已退出')
       },
-      
+
       // 切换上一首
       skipBackSong() {
         const listLength = this.$refs.musicRef.musicList.length
@@ -403,15 +510,21 @@
           }
         }
       },
-      // 获取歌单列表
+
+      // 进入歌单详情页面
       async getSonglistMusic(id) {
         this.$store.commit('setPlaylistId', id)
         window.sessionStorage.setItem('playListId', id)
         this.$router.push('playlist')
+      },
+
+      //删除我的歌单
+      deleteMyList(){
+        this.$message.success('删除')
       }
     },
 
-    
+
     computed: {
       musicList: () => {
         // 获取音乐列表
@@ -436,6 +549,7 @@
         }
       }
     },
+
     created() {
       // 记录当前播放
       if (
@@ -453,7 +567,7 @@
             JSON.parse(window.sessionStorage.getItem('nowMusic')).src === item.src
         )
       }
-      this.getUserInfo()
+      //this.getUserInfo()
     }
   }
 </script>

@@ -65,8 +65,8 @@
       // 搜索向导框
       async searchGuide(el) {
         this.$store.state.controlMsc.showList = false
-        const { data: res } = await this.$request.get('/search/hot')
-        this.searchHots = res.result.hots
+        // const { data: res } = await this.$request.get('/search/hot')
+        // this.searchHots = res.result.hots
         const history = window.sessionStorage.getItem('searchHistory')
         var arr = history === null ? [] : JSON.parse(history)
         this.historyTags = arr
@@ -79,11 +79,11 @@
           }
         }
       },
-      // 搜索热词
+      //点击标签词搜索
       hotTagEvent(e) {
         this.searchValue = e.target.innerText.trim()
         this.searchEvent()
-      },
+      }, 
       // 搜索事件
       searchEvent() {
         if (this.searchValue.trim().length === 0) {
@@ -103,7 +103,7 @@
         window.sessionStorage.setItem('searchHistory', JSON.stringify(arr))
         this.$router.push('searchlist')
       },
-      // 历史搜索
+      // 删除历史搜索
       historyTagClose(tag) {
         this.historyTags.splice(this.historyTags.indexOf(tag), 1)
         window.sessionStorage.setItem(

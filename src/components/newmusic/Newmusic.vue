@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="album" label="专辑" width="180"></el-table-column>
-        <el-table-column prop="time" label="时长" width="100"></el-table-column>
+        <!-- <el-table-column prop="time" label="时长" width="100"></el-table-column> -->
       </el-table>
     </div>
   </div>
@@ -55,10 +55,10 @@ export default {
       listIndex: 0,
       typeList: [
         { name: '全部', type: 0 },
-        { name: '华语', type: 7 },
-        { name: '欧美', type: 96 },
-        { name: '日本', type: 8 },
-        { name: '韩国', type: 16 }
+        // { name: '华语', type: 7 },
+        // { name: '欧美', type: 96 },
+        // { name: '日本', type: 8 },
+        // { name: '韩国', type: 16 }
       ],
       musiclist: [],
       musicdata: [],
@@ -72,29 +72,44 @@ export default {
       this.getMusicList(this.typeList[item].type)
       document.querySelector('.main-song-list').scrollTo(0, 0)
     },
-    async getMusicList() {
-      const type = arguments[0] === undefined ? 0 : arguments[0]
+    // async getMusicList() {//获得音乐列表
+    //   const type = arguments[0] === undefined ? 0 : arguments[0]
+    //   // const { data: res } = await this.$request.get(`/top/song?type=${type}`)
+    //   const arrData = []
+    //   res.data.forEach(item => {
+    //     const arr = {}
+    //     arr.name = item.name
+    //     arr.pic = item.album.picUrl
+    //     arr.author = []
+    //     item.artists.forEach(i => {
+    //       arr.author.push(i.name)
+    //     })
+    //     arr.id = item.id
+    //     // arr.time =
+    //     //   Math.floor((item.duration % 3600000) / 60000) > 10
+    //     //     ? Math.floor((item.duration % 3600000) / 60000)
+    //     //     : '0' + Math.floor((item.duration % 3600000) / 60000)
+    //     // arr.time +=
+    //     //   ':' +
+    //     //   (Math.floor((item.duration % 60000) / 1000) > 10
+    //     //     ? Math.floor((item.duration % 60000) / 1000)
+    //     //     : '0' + Math.floor((item.duration % 60000) / 1000))
+    //     arr.album = item.album.name
+    //     arrData.push(arr)
+    //   })
+    //   this.musicdata = arrData
+    //   this.musiclist = this.getArrayData(arrData, 1, 10)
+    // },
+    async getMusicList() {//获得音乐列表测试，目前可接收
       const { data: res } = await this.$request.get(`/top/song?type=${type}`)
       const arrData = []
       res.data.forEach(item => {
         const arr = {}
-        arr.name = item.name
-        arr.pic = item.album.picUrl
-        arr.author = []
-        item.artists.forEach(i => {
-          arr.author.push(i.name)
-        })
-        arr.id = item.id
-        arr.time =
-          Math.floor((item.duration % 3600000) / 60000) > 10
-            ? Math.floor((item.duration % 3600000) / 60000)
-            : '0' + Math.floor((item.duration % 3600000) / 60000)
-        arr.time +=
-          ':' +
-          (Math.floor((item.duration % 60000) / 1000) > 10
-            ? Math.floor((item.duration % 60000) / 1000)
-            : '0' + Math.floor((item.duration % 60000) / 1000))
-        arr.album = item.album.name
+        arr.name = item.Name
+        arr.pic = 'pic'
+        arr.author = item.Singerid
+        arr.id = item.ID
+        arr.album = item.Albumid
         arrData.push(arr)
       })
       this.musicdata = arrData
